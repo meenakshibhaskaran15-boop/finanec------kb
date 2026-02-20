@@ -188,11 +188,40 @@ function App() {
 
   const balance = totals.income - totals.expense;
 
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('ledger-theme');
+    return (saved as 'light' | 'dark') || 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('ledger-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
+
   return (
     <main className="animate-in">
-      <header style={{ marginBottom: '3rem', textAlign: 'center' }}>
-        <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>LedgerLite</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Zero-friction expense tracking • Cloud Synced</p>
+      <header style={{ marginBottom: '3rem', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'var(--glass-bg)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--glass-border)',
+              padding: '0.6rem 1rem',
+              boxShadow: 'none',
+              fontSize: '1.2rem'
+            }}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>LedgerLite</h1>
+          <p style={{ color: 'var(--text-secondary)' }}>Zero-friction expense tracking • Cloud Synced</p>
+        </div>
       </header>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
